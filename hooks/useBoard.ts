@@ -31,10 +31,14 @@ export const useBoard = (
 
       // Draw ghost piece first
       let ghostY = 0;
-      while (!checkCollision(player, newBoard, { x: 0, y: ghostY })) {
-        ghostY++;
+      if (player.tetromino.some(row => row.some(cell => cell !== 0))) {
+        while (!checkCollision(player, newBoard, { x: 0, y: ghostY })) {
+          ghostY++;
+        }
+        ghostY--;
+      } else {
+        ghostY = -1;
       }
-      ghostY--;
 
       if (ghostY >= 0) {
         player.tetromino.forEach((row, y) => {
