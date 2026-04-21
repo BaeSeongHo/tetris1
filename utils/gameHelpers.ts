@@ -3,7 +3,7 @@ import { TetrominoType } from './tetrominoes';
 export const STAGE_WIDTH = 10;
 export const STAGE_HEIGHT = 20;
 
-export type CellState = [TetrominoType, 'clear' | 'merged'];
+export type CellState = [TetrominoType, 'clear' | 'merged' | 'ghost'];
 export type StageType = CellState[][];
 
 export const createStage = (): StageType =>

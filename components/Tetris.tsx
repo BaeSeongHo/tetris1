@@ -267,18 +267,45 @@ const Tetris: React.FC = () => {
 
       {/* GAME OVER OVERLAY */}
       {appMode === 'PLAYING' && gameOver && startTime !== null && (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center animate-in fade-in duration-500 text-center">
+        <div className="absolute inset-0 bg-zinc-950 z-50 flex flex-col items-center justify-center animate-in fade-in duration-500 text-center p-6">
           <h2 className={`text-6xl md:text-8xl font-black mb-4 ${rows >= 3 ? 'text-yellow-400 drop-shadow-[0_0_30px_rgba(250,204,21,0.8)]' : 'text-red-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]'}`}>
             {rows >= 3 ? "CLEARED!" : "GAME OVER"}
           </h2>
-          <p className="text-2xl text-zinc-300 mb-2 font-mono">
-            Time: {formattedTime}s
-          </p>
-          <p className="text-xl text-zinc-400 mb-10 font-mono">
-            Rows Cleared: {rows} / 3
-          </p>
+          <div className="mb-8">
+            <p className="text-2xl text-zinc-300 mb-1 font-mono">
+              Time: {formattedTime}s
+            </p>
+            <p className="text-lg text-zinc-400 font-mono">
+              Rows Cleared: {rows} / 3
+            </p>
+          </div>
+
+          <div className="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 w-full max-w-sm mb-8 animate-in slide-in-from-bottom-5 duration-700 delay-200">
+            <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-3 border-b border-zinc-800 pb-2">
+              🏆 Top 3 Rankings
+            </h3>
+            {rankings.length === 0 ? (
+              <p className="text-zinc-600 py-2 text-sm italic">No records yet</p>
+            ) : (
+              <ul className="space-y-2">
+                {rankings.slice(0, 3).map((rank, i) => (
+                  <li key={rank.id} className="flex justify-between items-center bg-black/40 rounded-lg px-3 py-2 border border-zinc-800/50">
+                    <div className="flex items-center gap-3">
+                      <span className={`font-black ${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-zinc-300' : 'text-amber-600'}`}>
+                        #{i + 1}
+                      </span>
+                      <span className="font-bold text-white text-sm truncate max-w-[100px]">{rank.playerName}</span>
+                    </div>
+                    <span className="font-mono text-pink-400 text-sm font-bold">
+                      {(rank.timeMs / 1000).toFixed(2)}s
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           
-          <div className="flex gap-4 flex-col sm:flex-row w-full max-w-sm px-6">
+          <div className="flex gap-4 flex-col sm:flex-row w-full max-w-sm">
             <button
               onClick={startGame}
               className="flex-1 bg-pink-600 hover:bg-pink-500 hover:scale-105 transform transition-all text-white font-bold py-4 rounded-[10px] text-lg tracking-widest uppercase shadow-[0_0_20px_rgba(219,39,119,0.5)] border-2 border-pink-400 border-opacity-50"

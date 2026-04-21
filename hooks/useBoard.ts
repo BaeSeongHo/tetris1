@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { createStage, StageType, CellState } from '../utils/gameHelpers';
+import { createStage, StageType, CellState, checkCollision } from '../utils/gameHelpers';
 
 export const useBoard = (
   player: { pos: { x: number; y: number }; tetromino: any[][]; collided: boolean },
@@ -26,8 +26,29 @@ export const useBoard = (
     const updateBoard = (prevBoard: StageType): StageType => {
       // First flush the board
       const newBoard = prevBoard.map(row =>
-        row.map(cell => (cell[1] === 'clear' ? [0, 'clear'] : cell))
+        row.map(cell => (cell[1] === 'clear' || cell[1] === 'ghost' ? [0, 'clear'] : cell))
       ) as StageType;
+
+      // Draw ghost piece first
+      let ghostY = 0;
+      while (!checkCollision(player, newBoard, { x: 0, y: ghostY })) {
+        ghostY++;
+      }
+      ghostY--;
+
+      if (ghostY >= 0) {
+        player.tetromino.forEach((row, y) => {
+          row.forEach((value, x) => {
+            if (value !== 0) {
+              const boardY = y + player.pos.y + ghostY;
+              const boardX = x + player.pos.x;
+              if (newBoard[boardY] && newBoard[boardY][boardX]) {
+                newBoard[boardY][boardX] = [value, 'ghost'];
+              }
+            }
+          });
+        });
+      }
 
       // Then draw the tetromino
       player.tetromino.forEach((row, y) => {
